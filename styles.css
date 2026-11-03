@@ -1,0 +1,400 @@
+:root {
+  --bg: #000;
+  --card: #151515;
+  --card-border: #2e2e2e;
+  --text: #fbeedd;
+  --text-muted: #b9b0a4;
+  --accent: #7d7468;
+  --button: #fbeedd;
+  --button-text: #111;
+  --error: #ff9e8f;
+
+  /* Party chip colors from the ELECTAPP palette. The party name is always written out too. */
+  --party-democratic: #3a62d0;
+  --party-republican: #b0443a;
+  --party-libertarian: #c4b04a;
+  --party-green: #4c9a2a;
+  --party-other: #8a8a8a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Jeju Gothic", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+.app {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 0.75rem; }
+h1:focus { outline: none; }
+
+.lead { color: var(--text-muted); margin: 0 0 1.5rem; }
+
+form { display: flex; flex-direction: column; gap: 0.5rem; }
+
+label { font-size: 0.875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+
+input {
+  font: inherit;
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  padding: 0.75rem 1rem;
+  min-height: 3.25rem;
+  color: var(--text);
+  background: var(--card);
+  border: 2px solid var(--card-border);
+  border-radius: 0.75rem;
+}
+
+input[aria-invalid="true"] { border-color: var(--error); }
+
+button[type="submit"] {
+  font: inherit;
+  font-weight: bold;
+  min-height: 3.25rem;
+  margin-top: 0.75rem;
+  color: var(--button-text);
+  background: var(--button);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+button[type="submit"]:active { opacity: 0.8; }
+
+:focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
+
+.error { color: var(--error); margin: 0; }
+.note { color: var(--text-muted); font-size: 0.9rem; margin-top: 1.5rem; }
+
+.link-button {
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: 0;
+  padding: 0.5rem 0;
+  min-height: 2.75rem;
+  margin-bottom: 0.5rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.notice {
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+a { color: var(--text); }
+
+.race-list, .candidate-list { list-style: none; margin: 0; padding: 0; }
+.race-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.race-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 1.25rem 1rem;
+}
+
+.race-level {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.race-office { font-size: 1.4rem; margin: 0.15rem 0 0.5rem; }
+.race-explainer { margin: 0 0 1rem; }
+
+.candidate {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--card-border);
+}
+
+.avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: bold;
+}
+
+.candidate-details { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.candidate-name { font-weight: bold; }
+.running-mate { color: var(--text-muted); font-size: 0.9rem; }
+
+.party-chip {
+  flex: none;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  border: 2px solid var(--party-other);
+  border-radius: 999px;
+}
+
+.party-democratic { border-color: var(--party-democratic); }
+.party-republican { border-color: var(--party-republican); }
+.party-libertarian { border-color: var(--party-libertarian); }
+.party-green { border-color: var(--party-green); }
+
+.race-source { margin: 0.75rem 0 0; font-size: 0.8rem; color: var(--text-muted); }
+.race-source a { color: var(--text-muted); }
+
+.compare-button {
+  font: inherit;
+  font-weight: bold;
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 0.5rem;
+  color: var(--text);
+  background: none;
+  border: 2px solid var(--text);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.compare-button:active { opacity: 0.8; }
+
+.topic-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.topic {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 0 1rem;
+}
+
+.topic-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 1rem 0;
+  min-height: 3.25rem;
+  cursor: pointer;
+}
+
+.topic-label { font-size: 1.15rem; font-weight: bold; }
+.topic-coverage { font-size: 0.85rem; color: var(--text-muted); }
+
+.topic-candidate { padding: 0.75rem 0 1rem; border-top: 1px solid var(--card-border); }
+
+.topic-candidate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.position-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.item-type { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.item-text { margin: 0.1rem 0 0.25rem; }
+.item-source { font-size: 0.85rem; color: var(--text-muted); }
+.no-position { margin: 0; font-style: italic; color: var(--text-muted); }
+
+.learn-prompt { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border); }
+.learn-from-results { margin-top: 1.5rem; }
+
+.issue-picker { border: 1px solid var(--card-border); border-radius: 1rem; padding: 1rem; margin: 0 0 1rem; }
+.issue-picker legend { float: left; width: 100%; padding: 0; margin-bottom: 0.5rem; font-weight: bold; }
+.issue-picker-options { clear: both; display: flex; flex-direction: column; }
+.issue-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  font-size: 1.0625rem;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  cursor: pointer;
+}
+.issue-option input { width: 1.5rem; height: 1.5rem; min-height: 0; padding: 0; accent-color: var(--text); }
+.issue-picker .note { margin: 0.5rem 0 0; }
+
+.issue-body { padding: 0 0 1rem; border-top: 1px solid var(--card-border); }
+.issue-heading {
+  margin: 1rem 0 0.25rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.issue-questions { margin: 0; padding-left: 1.25rem; }
+.issue-questions li { margin-bottom: 0.4rem; }
+.issue-race { margin: 1rem 0 0; font-weight: bold; }
+
+.practice-list { display: flex; flex-direction: column; gap: 1rem; }
+.practice-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 1.25rem 1rem;
+}
+.practice-card .lead { margin-bottom: 1rem; }
+.practice-title { font-size: 1.4rem; margin: 0 0 0.5rem; }
+.practice-progress { margin: 0 0 0.25rem; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.practice-prompt { margin: 0 0 1rem; font-size: 1.15rem; }
+.practice-options { display: flex; flex-direction: column; gap: 0.5rem; }
+.practice-option {
+  font: inherit;
+  min-height: 3rem;
+  padding: 0.5rem 1rem;
+  color: var(--text);
+  background: none;
+  border: 2px solid var(--accent);
+  border-radius: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+}
+.practice-option:disabled { cursor: default; opacity: 0.6; }
+.practice-option.is-right, .practice-option.is-wrong { opacity: 1; border-color: var(--text); }
+.practice-option.is-right::after { content: "  ✓"; }
+.practice-option.is-wrong::after { content: "  ✗"; }
+.practice-feedback { margin-top: 1rem; }
+.practice-verdict { margin: 0 0 0.25rem; font-weight: bold; }
+.practice-claim { margin: 0 0 1rem; padding: 0.75rem 1rem; border-left: 3px solid var(--text); font-size: 1.15rem; }
+.practice-question { border-top: 1px solid var(--card-border); }
+.practice-ask { min-height: 3rem; padding: 0.75rem 0; cursor: pointer; font-weight: bold; }
+.practice-why { margin: 0 0 1rem; color: var(--text-muted); }
+
+[hidden] { display: none !important; }
+
+.practice-option.is-chosen { border-color: var(--text); }
+.quiz-section-heading { font-size: 1.15rem; margin: 2rem 0 0.75rem; }
+.quiz-answers { margin: 0; padding-left: 1.25rem; }
+.quiz-answers li { margin-bottom: 0.5rem; }
+
+.compass { display: block; width: 100%; max-width: 22rem; margin: 0 auto 0.75rem; }
+.compass-frame { fill: var(--card); stroke: var(--accent); stroke-width: 2; }
+.compass-axis { stroke: var(--card-border); stroke-width: 2; }
+.compass-label { fill: var(--text-muted); font-size: 12px; }
+.compass-dot { fill: var(--text); stroke: var(--bg); stroke-width: 3; }
+.compass-summary { margin: 0 0 1.5rem; padding-left: 1.25rem; }
+
+.example-toggle {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: none;
+  border: 0;
+  padding: 0.5rem 0;
+  min-height: 2.75rem;
+  margin-bottom: 0.5rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.example-text { margin: 0 0 1rem; padding: 0.75rem 1rem; border-left: 3px solid var(--accent); color: var(--text-muted); }
+
+.topic-columns { display: flex; flex-direction: column; }
+
+/* Laptop and desktop screens: use the full width instead of a narrow phone column. */
+@media (min-width: 900px) {
+  body { font-size: 1rem; }
+  .app { max-width: none; padding: 2.5rem 4vw 4rem; }
+  h1 { font-size: 2.4rem; }
+  .lead { max-width: 52rem; font-size: 1.05rem; }
+  .notice { max-width: 60rem; }
+
+  /* Zip screen: introduction and form on the left, the other ways in on the right. */
+  #zip-screen {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 5vw;
+    align-content: start;
+    padding-top: 4vh;
+  }
+  #zip-screen:not([hidden]) { display: grid; }
+  #zip-screen > * { grid-column: 1; }
+  #zip-form { max-width: 28rem; }
+  #zip-screen .learn-prompt {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    align-self: start;
+    margin-top: 0;
+    padding: 2rem;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 1rem;
+  }
+  #zip-screen .learn-prompt .compare-button { margin-top: 0.75rem; }
+
+  /* Ballot: races side by side. */
+  .race-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr)); align-items: start; gap: 1.5rem; }
+  .learn-from-results { max-width: 24rem; }
+
+  /* Issues: choices stay on the left while the issues fill the rest. */
+  .issues-layout { display: grid; grid-template-columns: 20rem minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+  .issues-sidebar { position: sticky; top: 1.5rem; }
+  .issues-sidebar .compare-button { margin-top: 0.75rem; }
+  .topic-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); column-gap: 2rem; }
+
+  /* Practice: the three activities side by side. */
+  .practice-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); align-items: start; gap: 1.5rem; }
+
+  /* Quiz: bigger text, answers in two columns, card kept readable but centred in the space. */
+  #quiz-body { max-width: 56rem; padding: 2rem; }
+  #quiz-body .practice-prompt { font-size: 1.4rem; }
+  #quiz-body .practice-options { display: grid; grid-template-columns: 1fr 1fr; }
+
+  /* Results: your picture stays in view on the left, the lists fill the right. */
+  .results-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 28rem) minmax(0, 1fr);
+    grid-template-areas: "plot stand" "plot topics";
+    grid-template-rows: auto 1fr;
+    column-gap: 4vw;
+    align-items: start;
+  }
+  .results-plot { grid-area: plot; position: sticky; top: 1.5rem; }
+  .results-stand { grid-area: stand; }
+  .results-topics { grid-area: topics; }
+  .quiz-section-heading { margin-top: 0; }
+  .results-topics .quiz-section-heading { margin-top: 2rem; }
+}
+
+/* Issue cards: a short collapsed view, then sections that open one at a time. */
+.issue-card > .topic-summary { gap: 0.5rem; padding: 1.1rem 0; }
+.issue-card > .topic-summary::after { content: "Show details \25BE"; font-size: 0.85rem; color: var(--text-muted); text-decoration: underline; }
+.issue-card[open] > .topic-summary::after { content: "Hide details \25B4"; }
+.issue-takeaway { color: var(--text-muted); font-size: 0.95rem; }
+
+.issue-glance { display: grid; gap: 0.75rem; margin-top: 0.25rem; }
+.glance-item { display: flex; flex-direction: column; gap: 0.2rem; padding-left: 0.75rem; border-left: 2px solid var(--card-border); }
+.glance-who { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.glance-name { font-weight: bold; font-size: 0.95rem; }
+.glance-who .party-chip { padding: 0.1rem 0.6rem; font-size: 0.75rem; }
+.glance-text { font-size: 0.95rem; }
+
+.issue-section { border-top: 1px solid var(--card-border); }
+.issue-section-title { padding: 0.85rem 0; min-height: 2.75rem; font-weight: bold; font-size: 0.95rem; cursor: pointer; }
+.issue-section-body { padding: 0 0 1rem; }
+.issue-section-body p { margin: 0; }
+
+@media (min-width: 900px) {
+  .issue-glance { grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem 2rem; }
+  .item-text { font-size: 0.975rem; }
+}
+
+.issue-latest { font-size: 0.95rem; }
+.full-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; margin: 0.75rem 0 0; font-size: 0.9rem; }

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ELECTAPP – Illinois Election Guide</title>
+  <meta name="description" content="A neutral, plain-language guide to what is on your Illinois ballot.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <section id="zip-screen" class="screen" aria-labelledby="zip-heading">
+      <h1 id="zip-heading">What's on my ballot?</h1>
+      <p class="lead">Enter your zip code to see the races on the Illinois ballot for November 3, 2026, explained in plain language.</p>
+
+      <form id="zip-form" novalidate>
+        <label for="zip-input">Zip code</label>
+        <input id="zip-input" name="zip" type="text" inputmode="numeric" autocomplete="postal-code"
+               maxlength="5" placeholder="e.g. 61820" aria-describedby="zip-error">
+        <p id="zip-error" class="error" role="alert" hidden></p>
+        <button type="submit">Continue</button>
+      </form>
+
+      <p class="note">No account needed. We don't save your zip code. This guide does not endorse anyone.</p>
+
+      <div class="learn-prompt">
+        <p class="lead">Not sure where you stand yet? Start with the issues themselves. No zip code needed.</p>
+        <button id="learn-from-zip" class="compare-button" type="button">Learn about the issues</button>
+        <button id="quiz-from-zip" class="compare-button" type="button">Where do my views fall?</button>
+        <button id="practice-from-zip" class="compare-button" type="button">Practice reading politics</button>
+      </div>
+    </section>
+
+    <section id="results-screen" class="screen" aria-labelledby="results-heading" hidden>
+      <button id="back-button" class="link-button" type="button">&larr; Change zip code</button>
+      <h1 id="results-heading">Illinois ballot</h1>
+      <p id="results-subtitle" class="lead"></p>
+
+      <div class="notice" role="note">
+        <strong>Heads up:</strong> candidates are shown from public sources and have not all been
+        checked against the Illinois State Board of Elections' certified list yet. Other candidates
+        may also appear on your ballot. Always confirm with the
+        <a href="https://elections.il.gov" target="_blank" rel="noopener">official site</a>.
+      </div>
+
+      <ul id="race-list" class="race-list"></ul>
+
+      <button id="illinois-by-issue" class="compare-button learn-from-results" type="button">See Illinois candidates by issue</button>
+      <button id="learn-from-results" class="compare-button" type="button">Learn about the issues (all of the U.S.)</button>
+      <button id="practice-from-results" class="compare-button" type="button">Practice reading politics</button>
+    </section>
+
+    <section id="practice-screen" class="screen" aria-labelledby="practice-heading" hidden>
+      <button id="practice-back-button" class="link-button" type="button">&larr; Back</button>
+      <h1 id="practice-heading" tabindex="-1">Practice reading politics</h1>
+      <p class="lead">Three quick activities that work for any election. Tap your answer to see why. Nothing is scored, saved, or recommended.</p>
+      <div id="practice-list" class="practice-list"></div>
+    </section>
+
+    <section id="issues-screen" class="screen" aria-labelledby="issues-heading" hidden>
+      <button id="issues-back-button" class="link-button" type="button">&larr; Back</button>
+      <h1 id="issues-heading" tabindex="-1">Learn about the issues</h1>
+      <p id="issues-lead" class="lead"></p>
+
+      <div class="issues-layout">
+        <aside class="issues-sidebar">
+          <fieldset class="issue-picker">
+            <legend>Which issues matter most to you? (optional)</legend>
+            <div id="issue-picker-options" class="issue-picker-options"></div>
+            <p id="issue-picker-status" class="note" role="status"></p>
+          </fieldset>
+
+          <button id="quiz-from-issues" class="compare-button" type="button">Where do my views fall?</button>
+          <button id="practice-from-issues" class="compare-button" type="button">Practice reading politics</button>
+        </aside>
+
+        <div id="issue-list" class="topic-list"></div>
+      </div>
+    </section>
+
+    <section id="quiz-screen" class="screen" aria-labelledby="quiz-heading" hidden>
+      <button id="quiz-back-button" class="link-button" type="button">&larr; Back</button>
+      <h1 id="quiz-heading" tabindex="-1">Where do my views fall?</h1>
+      <p class="lead">21 statements, about 4 minutes. Pick how much you agree with each one, or skip it. Your answers stay on this device and are not saved.</p>
+      <div id="quiz-body" class="practice-card"></div>
+    </section>
+
+    <section id="quiz-results-screen" class="screen" aria-labelledby="quiz-results-heading" hidden>
+      <button id="quiz-results-back-button" class="link-button" type="button">&larr; Back to the start</button>
+      <h1 id="quiz-results-heading" tabindex="-1">Where your views fall</h1>
+
+      <div class="results-layout">
+      <div class="results-stand">
+        <h2 class="quiz-section-heading">What you said you stand for</h2>
+        <div id="quiz-stand"></div>
+      </div>
+
+      <div class="results-plot">
+      <h2 class="quiz-section-heading">Your answers as a picture</h2>
+      <div id="quiz-plot"></div>
+
+      <div class="notice" role="note">
+        <strong>How to read the grid.</strong> Across: how big a role you want government to play in
+        the economy (taxes, wages, health care, business rules). Up and down: how much you want
+        government to limit personal choices (abortion, guns, drugs, policing). These are two separate
+        questions, so you can want a bigger government role in the economy and more personal freedom
+        at the same time.
+        <br><br>
+        Two axes cannot capture everything, and where a dot lands depends on how the statements are
+        framed. For example, we counted limits on guns and on abortion as "more government control."
+        This is a picture of your answers, not a label or a recommendation. The military statements
+        are listed above but not plotted.
+      </div>
+
+      <button id="quiz-retake" class="compare-button" type="button">Retake the statements</button>
+      </div>
+
+      <div class="results-topics">
+        <h2 class="quiz-section-heading">Your answers by issue, with the candidates' positions</h2>
+        <div id="quiz-topic-list" class="topic-list"></div>
+      </div>
+      </div>
+    </section>
+
+    <section id="compare-screen" class="screen" aria-labelledby="compare-heading" hidden>
+      <button id="compare-back-button" class="link-button" type="button">&larr; Back to races</button>
+      <h1 id="compare-heading" tabindex="-1"></h1>
+      <p id="compare-subtitle" class="lead"></p>
+
+      <div class="notice" role="note">
+        Positions are summarized from each candidate's own website where possible, and from named news
+        interviews otherwise. We don't rate or label anyone. Read the linked sources for the full picture.
+      </div>
+
+      <div id="topic-list" class="topic-list"></div>
+    </section>
+  </main>
+
+  <script src="data/illinois-races.js"></script>
+  <script src="data/issues.js"></script>
+  <script src="data/illinois-issues.js"></script>
+  <script src="data/party-platforms.js"></script>
+  <script src="data/current-events.js"></script>
+  <script src="data/practice.js"></script>
+  <script src="zip.js"></script>
+  <script src="data/quiz.js"></script>
+  <script src="practice.js"></script>
+  <script src="quiz.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
