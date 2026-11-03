@@ -8,6 +8,7 @@
   --button: #fbeedd;
   --button-text: #111;
   --error: #ff9e8f;
+  --font: "Jeju Gothic", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   /* Party chip colors from the ELECTAPP palette. The party name is always written out too. */
   --party-democratic: #3a62d0;
@@ -23,7 +24,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: "Jeju Gothic", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font);
   font-size: 1.0625rem;
   line-height: 1.5;
 }
@@ -398,3 +399,78 @@ a { color: var(--text); }
 
 .issue-latest { font-size: 0.95rem; }
 .full-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; margin: 0.75rem 0 0; font-size: 0.9rem; }
+
+/* Display options. Dark is the default look defined in :root above. */
+:root[data-theme="light"] {
+  --bg: #fbf7f0;
+  --card: #ffffff;
+  --card-border: #cfc6b8;
+  --text: #1d1a16;
+  --text-muted: #51493f;
+  --accent: #6b6358;
+  --button: #1d1a16;
+  --button-text: #fbf7f0;
+  --error: #b3261e;
+  --party-democratic: #2748a8;
+  --party-republican: #a3342b;
+  --party-libertarian: #7a6a10;
+  --party-green: #2f6e14;
+  --party-other: #6b6b6b;
+}
+
+:root[data-theme="contrast"] {
+  --bg: #000000;
+  --card: #000000;
+  --card-border: #ffffff;
+  --text: #ffffff;
+  --text-muted: #f2f2f2;
+  --accent: #ffffff;
+  --button: #ffffff;
+  --button-text: #000000;
+  --error: #ffb4a8;
+  --party-democratic: #8fb0ff;
+  --party-republican: #ff9a90;
+  --party-libertarian: #ffe94a;
+  --party-green: #86e552;
+  --party-other: #ffffff;
+}
+
+:root[data-theme="contrast"] .race-card,
+:root[data-theme="contrast"] .topic,
+:root[data-theme="contrast"] .practice-card,
+:root[data-theme="contrast"] .notice,
+:root[data-theme="contrast"] .issue-picker,
+:root[data-theme="contrast"] .display-panel { border-width: 2px; }
+:root[data-theme="contrast"] :focus-visible { outline: 3px solid #ffe94a; outline-offset: 2px; }
+
+/* Dyslexia-friendly font: OpenDyslexic with looser spacing, which also helps readability. */
+:root[data-font="dyslexia"] {
+  --font: "OpenDyslexic", "Comic Sans MS", system-ui, sans-serif;
+}
+:root[data-font="dyslexia"] body { line-height: 1.8; letter-spacing: 0.03em; word-spacing: 0.12em; }
+
+.app { padding-top: 3.5rem; }
+.display-control { position: fixed; top: 0.75rem; right: 0.75rem; z-index: 10; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+.display-toggle {
+  font: inherit;
+  font-size: 0.9rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 1rem;
+  color: var(--text);
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.display-panel {
+  min-width: 15rem;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+}
+.display-group { margin: 0 0 0.5rem; padding: 0; border: 0; }
+.display-group legend { padding: 0; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.display-option { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; font-size: 1rem; letter-spacing: normal; text-transform: none; color: var(--text); cursor: pointer; }
+.display-option input { width: 1.4rem; height: 1.4rem; min-height: 0; padding: 0; accent-color: var(--text); }
+:root[data-theme="contrast"] ::placeholder { color: #d9d9d9; opacity: 1; }
