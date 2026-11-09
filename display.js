@@ -110,6 +110,10 @@
     }
 
     toggle.addEventListener("click", function () { setOpen(panel.hidden); });
+    // A click anywhere outside the button and panel closes the panel.
+    document.addEventListener("click", function (event) {
+      if (!panel.hidden && !control.contains(event.target)) setOpen(false);
+    });
     control.addEventListener("keydown", function (event) {
       if (event.key === "Escape" && !panel.hidden) {
         setOpen(false);
