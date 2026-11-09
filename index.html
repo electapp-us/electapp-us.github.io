@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ELECTAPP – Illinois Election Guide</title>
-  <meta name="description" content="A neutral, plain-language guide to what is on your Illinois ballot.">
+  <title>ELECTAPP – A plain-language guide to U.S. politics</title>
+  <meta name="description" content="A neutral, plain-language guide to U.S. political issues, what the major parties say, and where your own views fall, with an Illinois 2026 election reference.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&display=swap" rel="stylesheet">
@@ -14,37 +14,43 @@
 <body>
   <main class="app">
     <section id="zip-screen" class="screen" aria-labelledby="zip-heading">
-      <h1 id="zip-heading">What's on my ballot?</h1>
-      <p class="lead">Enter your zip code to see the races on the Illinois ballot for November 3, 2026, explained in plain language.</p>
-
-      <form id="zip-form" novalidate>
-        <label for="zip-input">Zip code</label>
-        <input id="zip-input" name="zip" type="text" inputmode="numeric" autocomplete="postal-code"
-               maxlength="5" placeholder="e.g. 61820" aria-describedby="zip-error">
-        <p id="zip-error" class="error" role="alert" hidden></p>
-        <button type="submit">Continue</button>
-      </form>
-
-      <p class="note">No account needed. We don't save your zip code. This guide does not endorse anyone.</p>
+      <h1 id="zip-heading">Understand U.S. politics, in plain language</h1>
+      <p class="lead">ELECTAPP explains the issues, what the major parties say, and where your own views fall. It does not endorse anyone.</p>
 
       <div class="learn-prompt">
-        <p class="lead">Not sure where you stand yet? Start with the issues themselves. No zip code needed.</p>
+        <p class="lead">Start here. No zip code needed.</p>
         <button id="learn-from-zip" class="compare-button" type="button">Learn about the issues</button>
         <button id="quiz-from-zip" class="compare-button" type="button">Where do my views fall?</button>
         <button id="practice-from-zip" class="compare-button" type="button">Practice reading politics</button>
+      </div>
+
+      <div class="reference">
+        <h2 class="reference-heading">Illinois 2026 election reference</h2>
+        <p class="lead">The Illinois general election was held on November 3, 2026. Enter an Illinois zip code to see the statewide races as we found them before Election Day, explained in plain language. Results are not shown.</p>
+
+        <form id="zip-form" novalidate>
+          <label for="zip-input">Zip code</label>
+          <input id="zip-input" name="zip" type="text" inputmode="numeric" autocomplete="postal-code"
+                 maxlength="5" placeholder="e.g. 61820" aria-describedby="zip-error">
+          <p id="zip-error" class="error" role="alert" hidden></p>
+          <button type="submit">Continue</button>
+        </form>
+
+        <p class="note">No account needed. We don't save your zip code.</p>
       </div>
     </section>
 
     <section id="results-screen" class="screen" aria-labelledby="results-heading" hidden>
       <button id="back-button" class="link-button" type="button">&larr; Change zip code</button>
-      <h1 id="results-heading">Illinois ballot</h1>
+      <h1 id="results-heading">Illinois 2026 election reference</h1>
       <p id="results-subtitle" class="lead"></p>
 
       <div class="notice" role="note">
-        <strong>Heads up:</strong> candidates are shown from public sources and have not all been
-        checked against the Illinois State Board of Elections' certified list yet. Other candidates
-        may also appear on your ballot. Always confirm with the
-        <a href="https://elections.il.gov" target="_blank" rel="noopener">official site</a>.
+        <strong>About this page:</strong> this is a reference to the races and candidates as we found
+        them before Election Day. It does not show election results. Candidates come from public sources
+        and have not all been checked against the Illinois State Board of Elections' certified list, and
+        other candidates may have appeared on the ballot. For official results and candidates, see the
+        <a href="https://elections.il.gov" target="_blank" rel="noopener">Illinois State Board of Elections</a>.
       </div>
 
       <ul id="race-list" class="race-list"></ul>

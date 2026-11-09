@@ -213,7 +213,9 @@ a { color: var(--text); }
 .item-source { font-size: 0.85rem; color: var(--text-muted); }
 .no-position { margin: 0; font-style: italic; color: var(--text-muted); }
 
-.learn-prompt { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border); }
+.learn-prompt { margin-top: 1.5rem; }
+.reference { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border); }
+.reference-heading { font-size: 1.4rem; margin: 0 0 0.5rem; }
 .learn-from-results { margin-top: 1.5rem; }
 
 .issue-picker { border: 1px solid var(--card-border); border-radius: 1rem; padding: 1rem; margin: 0 0 1rem; }

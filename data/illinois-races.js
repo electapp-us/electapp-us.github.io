@@ -1,4 +1,5 @@
-// Statewide races on the Illinois ballot, November 3, 2026.
+// Statewide races on the Illinois ballot, November 3, 2026. This is a reference to the races and candidates
+// as found before Election Day; it contains no election results.
 // Candidates are listed alphabetically by last name so no one is placed first for any other reason.
 // Major-party nominees only so far; the full certified list still needs checking against
 // the Illinois State Board of Elections (elections.il.gov).
@@ -21,7 +22,7 @@ window.ILLINOIS_ELECTION = {
       office: "U.S. Senator",
       level: "Federal",
       explainer:
-        "Illinois has two U.S. Senators who help write and vote on national laws and approve federal judges and top officials. This seat is open because the current senator, Dick Durbin, is not running again. The winner serves a six-year term.",
+        "Illinois has two U.S. Senators who help write and vote on national laws and approve federal judges and top officials. This seat was open in 2026 because Dick Durbin, who held it, did not run again. The winner serves a six-year term.",
       candidates: [
         { name: "Juliana Stratton", party: "Democratic" },
         { name: "Don Tracy", party: "Republican" }
@@ -275,7 +276,7 @@ window.ILLINOIS_ELECTION = {
       office: "Comptroller",
       level: "State",
       explainer:
-        "The state's bookkeeper. The Comptroller pays the state's bills, keeps track of what the state owes and spends, and publishes financial reports. The current Comptroller, Susana Mendoza, is not running again. Four-year term.",
+        "The state's bookkeeper. The Comptroller pays the state's bills, keeps track of what the state owes and spends, and publishes financial reports. Susana Mendoza, who held the office, did not run again in 2026. Four-year term.",
       candidates: [
         { name: "Margaret Croke", party: "Democratic" },
         { name: "Bryan Drew", party: "Republican" }

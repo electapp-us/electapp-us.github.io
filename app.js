@@ -25,7 +25,7 @@
 
   var ERROR_MESSAGES = {
     format: "Please enter a 5-digit zip code, like 61820.",
-    "outside-illinois": "That zip code isn't in Illinois. This guide only covers Illinois for now."
+    "outside-illinois": "That zip code isn't in Illinois, and the election reference only covers Illinois. Learn about the issues, the quiz, and Practice work for everyone, without a zip code."
   };
 
   function showError(message) {
@@ -102,8 +102,8 @@
   function showResults(zip) {
     var election = window.ILLINOIS_ELECTION;
     resultsSubtitle.textContent =
-      "Statewide races for " + election.date + " (zip code " + zip + "). " +
-      "Local and district races are coming later.";
+      "Statewide races for the " + election.date + " general election, as we found them before Election Day " +
+      "(zip code " + zip + "). Local and district races are not included.";
     raceList.replaceChildren();
     election.races.forEach(function (race) {
       raceList.appendChild(renderRace(race));
@@ -372,7 +372,7 @@
     },
     illinois: {
       heading: "Illinois candidates by issue",
-      lead: "The same issues, with the Illinois U.S. Senate candidates' own sourced positions and the Illinois details."
+      lead: "The same issues, with the 2026 Illinois U.S. Senate candidates' own sourced positions (as found before Election Day) and the Illinois details."
     }
   };
 
@@ -406,7 +406,7 @@
     });
     body.appendChild(answers);
     body.appendChild(renderIssueCandidates(topic, "Where the major parties stand", nationalSources()));
-    body.appendChild(renderIssueCandidates(topic, "Illinois U.S. Senate candidates", illinoisSources()));
+    body.appendChild(renderIssueCandidates(topic, "Illinois U.S. Senate candidates (2026 race)", illinoisSources()));
     details.appendChild(body);
     return details;
   }
