@@ -18,6 +18,9 @@
   var practiceScreen = document.getElementById("practice-screen");
   var practiceList = document.getElementById("practice-list");
   var practiceReturnScreen = zipScreen;
+  var discoverScreen = document.getElementById("discover-screen");
+  var discoverReturnScreen = zipScreen;
+  var discoverReturnIssueId = null;
   var quizScreen = document.getElementById("quiz-screen");
   var quizResultsScreen = document.getElementById("quiz-results-screen");
   var quizReturnScreen = zipScreen;
@@ -246,25 +249,45 @@
     var guide = (illinois ? window.ILLINOIS_ISSUE_GUIDES : window.ISSUE_GUIDES)[topic.id];
     var sources = illinois ? illinoisSources() : nationalSources();
     var details = element("details", "topic issue-card");
+    details.setAttribute("data-issue", topic.id);
     var summary = element("summary", "topic-summary");
     summary.appendChild(element("span", "topic-label", topic.label));
     summary.appendChild(element("span", "issue-takeaway", guide.summary));
-    var current = !illinois && window.CURRENT_DEVELOPMENTS.topics[topic.id];
-    if (current) {
+    var news = illinois ? [] : window.newsForTopic(topic.id);
+    if (!illinois) {
       var latest = element("span", "issue-latest");
       latest.appendChild(element("strong", null, "Latest: "));
-      latest.appendChild(document.createTextNode(current.latest));
+      latest.appendChild(document.createTextNode(
+        news.length > 0 ? news[0].headline : "No verified recent development on this issue yet."));
       summary.appendChild(latest);
+
+      // On the card face, right under "Latest", so it is visible while the card is collapsed.
+      // A button inside the summary opens Discover without expanding or collapsing the card.
+      var seeNews = element("button", "learn-discover-link", "See recent developments");
+      seeNews.type = "button";
+      // Seven identical buttons would sound the same to a screen reader, so each names its issue.
+      seeNews.setAttribute("aria-label", "See recent developments about " + topic.label);
+      var arrow = element("span", null, " →");
+      arrow.setAttribute("aria-hidden", "true");
+      seeNews.appendChild(arrow);
+      seeNews.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        showDiscover(issuesScreen, { filter: topic.id, issueId: topic.id, backLabel: topic.label });
+      });
+      summary.appendChild(seeNews);
     }
     summary.appendChild(renderIssueGlance(topic, sources));
     details.appendChild(summary);
 
     var body = element("div", "issue-body");
-    if (current) {
+    if (!illinois) {
       body.appendChild(renderIssueSection(
         topic,
-        "Where things stand now (updated " + window.CURRENT_DEVELOPMENTS.checkedOn + ")",
-        renderDevelopments(current)
+        "Where things stand now (checked " + window.NEWS.checkedOn + ")",
+        news.length > 0
+          ? renderDevelopments(news)
+          : element("p", "no-position", "We have not verified a recent development on this issue yet. We only list items we can check against their sources, so check back after the next update.")
       ));
     }
     body.appendChild(renderIssueSection(topic, "Who makes the decisions", element("p", null, guide.whoDecides)));
@@ -284,14 +307,14 @@
   }
 
   // Dated, sourced list of recent laws, rulings, and what each party's leaders say they would do next.
-  function renderDevelopments(current) {
+  function renderDevelopments(cards) {
     var list = element("ul", "position-list");
-    current.items.forEach(function (item) {
+    cards.forEach(function (card) {
       var entry = element("li", "position-item");
-      entry.appendChild(element("span", "item-type", item.date));
-      entry.appendChild(element("p", "item-text", item.text));
-      var link = element("a", "item-source", "Source: " + item.source.label);
-      link.href = item.source.url;
+      entry.appendChild(element("span", "item-type", window.newsDateLabel(card)));
+      entry.appendChild(element("p", "item-text", card.headline + ". " + card.summary));
+      var link = element("a", "item-source", "Source: " + card.publisher);
+      link.href = card.url;
       link.target = "_blank";
       link.rel = "noopener";
       entry.appendChild(link);
@@ -476,6 +499,40 @@
     window.scrollTo(0, 0);
   }
 
+  // options (optional): { filter, issueId, backLabel } when arriving from a Learn issue, so Discover opens
+  // on that issue and Back returns to it.
+  function showDiscover(fromScreen, options) {
+    discoverReturnScreen = fromScreen;
+    discoverReturnIssueId = options && options.issueId ? options.issueId : null;
+    document.getElementById("discover-back-button").textContent =
+      "← Back" + (options && options.backLabel ? " to " + options.backLabel : "");
+    window.renderDiscoverScreen({
+      filters: document.getElementById("discover-filters"),
+      list: document.getElementById("discover-list"),
+      status: document.getElementById("discover-status"),
+      checked: document.getElementById("discover-checked")
+    }, window.NEWS, options && options.filter);
+    fromScreen.hidden = true;
+    discoverScreen.hidden = false;
+    window.revealSelectedFilter(document.getElementById("discover-filters"));
+    window.scrollTo(0, 0);
+    document.getElementById("discover-heading").focus();
+  }
+
+  function leaveDiscover() {
+    discoverScreen.hidden = true;
+    discoverReturnScreen.hidden = false;
+    var card = discoverReturnIssueId &&
+      issueList.querySelector('.issue-card[data-issue="' + discoverReturnIssueId + '"]');
+    if (card) {
+      card.open = true;
+      card.scrollIntoView();
+      card.querySelector("summary").focus({ preventScroll: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }
+
   function showPractice(fromScreen) {
     practiceReturnScreen = fromScreen;
     window.renderPractice(practiceList);
@@ -530,6 +587,10 @@
   document.getElementById("learn-from-results").addEventListener("click", function () {
     showIssues(resultsScreen, "national");
   });
+  document.getElementById("discover-from-zip").addEventListener("click", function () {
+    showDiscover(zipScreen);
+  });
+  document.getElementById("discover-back-button").addEventListener("click", leaveDiscover);
   document.getElementById("illinois-by-issue").addEventListener("click", function () {
     showIssues(resultsScreen, "illinois");
   });

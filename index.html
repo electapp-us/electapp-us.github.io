@@ -20,6 +20,7 @@
       <div class="learn-prompt">
         <p class="lead">Start here. No zip code needed.</p>
         <button id="learn-from-zip" class="compare-button" type="button">Learn about the issues</button>
+        <button id="discover-from-zip" class="compare-button" type="button">Discover recent developments</button>
         <button id="quiz-from-zip" class="compare-button" type="button">Where do my views fall?</button>
         <button id="practice-from-zip" class="compare-button" type="button">Practice reading politics</button>
       </div>
@@ -88,6 +89,17 @@
       </div>
     </section>
 
+    <section id="discover-screen" class="screen" aria-labelledby="discover-heading" hidden>
+      <button id="discover-back-button" class="link-button" type="button">&larr; Back</button>
+      <h1 id="discover-heading" tabindex="-1">Discover</h1>
+      <p class="lead">Recent political developments in plain language, each with a link to the original source. Filter by issue or by elections.</p>
+      <p id="discover-checked" class="note"></p>
+
+      <div id="discover-filters" class="discover-filters" role="group" aria-label="Filter developments by topic"></div>
+      <p id="discover-status" class="note" role="status"></p>
+      <ul id="discover-list" class="discover-list"></ul>
+    </section>
+
     <section id="quiz-screen" class="screen" aria-labelledby="quiz-heading" hidden>
       <button id="quiz-back-button" class="link-button" type="button">&larr; Back</button>
       <h1 id="quiz-heading" tabindex="-1">Where do my views fall?</h1>
@@ -150,12 +162,13 @@
   <script src="data/issues.js"></script>
   <script src="data/illinois-issues.js"></script>
   <script src="data/party-platforms.js"></script>
-  <script src="data/current-events.js"></script>
+  <script src="data/news.js"></script>
   <script src="data/practice.js"></script>
   <script src="zip.js"></script>
   <script src="data/quiz.js"></script>
   <script src="practice.js"></script>
   <script src="quiz.js"></script>
+  <script src="discover.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
