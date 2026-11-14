@@ -232,7 +232,7 @@ a { color: var(--text); }
   color: var(--text);
   cursor: pointer;
 }
-.issue-option input { width: 1.5rem; height: 1.5rem; min-height: 0; padding: 0; accent-color: var(--text); }
+.issue-option input { flex: none; width: 1.5rem; height: 1.5rem; min-height: 0; padding: 0; accent-color: var(--text); }
 .issue-picker .note { margin: 0.5rem 0 0; }
 
 .issue-body { padding: 0 0 1rem; border-top: 1px solid var(--card-border); }
@@ -442,6 +442,7 @@ a { color: var(--text); }
 :root[data-theme="contrast"] .practice-card,
 :root[data-theme="contrast"] .notice,
 :root[data-theme="contrast"] .issue-picker,
+:root[data-theme="contrast"] .interests-edit,
 :root[data-theme="contrast"] .display-panel { border-width: 2px; }
 :root[data-theme="contrast"] :focus-visible { outline: 3px solid #ffe94a; outline-offset: 2px; }
 
@@ -520,19 +521,30 @@ a { color: var(--text); }
   background: rgb(var(--topic-rgb));
 }
 
-/* Filters: one scrolling row on phones (with a fade on the right edge), wrapped on laptops. */
-.discover-filters {
-  display: flex;
+/* Filters in two small labelled groups. The topic row scrolls sideways on phones (with a fade on the right
+   edge) and wraps on laptops; Browse is only three buttons and never needs to scroll. */
+.discover-filters { margin: 0.75rem 0 0.25rem; }
+.filter-group { margin: 0 0 0.3rem; }
+.filter-group + .filter-group { margin-top: 0.5rem; }
+.filter-group-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.filter-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.issue-view { margin: 0 0 1rem; }
+.filter-row-scroll {
   flex-wrap: nowrap;
-  gap: 0.5rem;
-  margin: 1rem -1rem 0.25rem 0;
-  padding: 0.1rem 2.25rem 0.6rem 0;
+  margin-right: -1rem;
+  padding: 0.1rem 2.25rem 0.3rem 0;
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2.25rem), transparent);
   mask-image: linear-gradient(to right, #000 calc(100% - 2.25rem), transparent);
 }
-.discover-filters::-webkit-scrollbar { display: none; }
+.filter-row-scroll::-webkit-scrollbar { display: none; }
 .filter-chip {
   flex: none;
   display: inline-flex;
@@ -549,8 +561,8 @@ a { color: var(--text); }
   border-radius: 999px;
   cursor: pointer;
 }
-.filter-chip[data-filter="all"] { padding-left: 1rem; border-color: var(--accent); }
-.filter-chip[data-filter="all"]::before { display: none; }
+.filter-chip[data-filter="all"], .filter-chip[data-filter="interests"], .filter-chip[data-filter="saved"], .filter-chip[data-view] { padding-left: 1rem; border-color: var(--accent); }
+.filter-chip[data-filter="all"]::before, .filter-chip[data-filter="interests"]::before, .filter-chip[data-filter="saved"]::before, .filter-chip[data-view]::before { display: none; }
 .filter-chip[aria-pressed="true"] { font-weight: bold; color: var(--bg); background: var(--text); border-color: var(--text); }
 .filter-chip[aria-pressed="true"]::before { background: var(--bg); }
 
@@ -593,6 +605,7 @@ a { color: var(--text); }
 .news-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; margin-top: auto; }
 .news-meta { margin: 0; font-size: 0.78rem; line-height: 1.4; color: var(--text-muted); }
 .news-publisher { font-weight: bold; }
+.news-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .news-link {
   display: inline-flex;
   align-items: center;
@@ -605,8 +618,56 @@ a { color: var(--text); }
   border: 2px solid rgb(var(--topic-rgb));
   border-radius: 999px;
 }
+
+/* Save button: neutral colors (it is not a topic), filled once the card is saved. The Done button that
+   closes the interests panel looks the same. */
+.bookmark-button,
+.interests-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.3rem 1rem;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--text);
+  background: none;
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.bookmark-button svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.bookmark-button[data-state="saved"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+.bookmark-button[data-state="saved"] svg { fill: currentColor; }
+.saved-note {
+  margin: 0 0 0.9rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  background: rgb(var(--topic-rgb) / 0.08);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.discover-message { margin: 0.25rem 0 0; font-weight: bold; }
+.discover-message:empty { margin: 0; }
+.discover-message.is-error { padding: 0.5rem 0.75rem; border: 2px solid var(--accent); border-radius: 0.5rem; }
+
+/* My interests: the panel for choosing topics, under the filters. Same neutral colors as the rest of the page. */
+.interests-panel { margin: 0.25rem 0 0.5rem; }
+.interests-edit { background: var(--card); border: 1px solid var(--card-border); border-radius: 1rem; }
+.interests-panel .interests-edit > summary { padding: 0.4rem 1rem; font-size: 1rem; }
+.interests-body { padding: 0 1rem 1rem; }
+.interests-intro { margin: 0.25rem 0 0.75rem; }
+.interest-picker { margin: 0; padding: 0; border: 0; }
+.interest-picker legend { padding: 0; margin-bottom: 0.25rem; font-weight: bold; }
+.interest-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 0.75rem; }
+.interests-note { margin: 0.5rem 0 0.75rem; }
+.interests-done[hidden] { display: none; }
 .news-details { margin-top: 0.5rem; border-top: 1px solid var(--card-border); }
-.news-details > summary {
+.news-details > summary,
+.interests-edit > summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -618,9 +679,11 @@ a { color: var(--text); }
   border-radius: 0.5rem;
   cursor: pointer;
 }
-.news-details > summary::-webkit-details-marker { display: none; }
+.news-details > summary::-webkit-details-marker,
+.interests-edit > summary::-webkit-details-marker { display: none; }
 .news-details > summary:hover { background: rgb(var(--topic-rgb) / 0.1); }
-.news-details > summary::after {
+.news-details > summary::after,
+.interests-edit > summary::after {
   content: "";
   flex: none;
   width: 0.5rem;
@@ -630,7 +693,8 @@ a { color: var(--text); }
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
 }
-.news-details[open] > summary::after { margin-bottom: 0; transform: rotate(225deg); }
+.news-details[open] > summary::after,
+.interests-edit[open] > summary::after { margin-bottom: 0; transform: rotate(225deg); }
 .details-less { display: none; }
 .news-details[open] .details-more { display: none; }
 .news-details[open] .details-less { display: inline; }
@@ -644,8 +708,9 @@ a { color: var(--text); }
 :root[data-theme="contrast"] .news-card { border-width: 2px; border-top-width: 5px; }
 
 @media (min-width: 900px) {
-  .discover-filters { flex-wrap: wrap; margin-right: 0; padding-right: 0; overflow-x: visible; -webkit-mask-image: none; mask-image: none; }
+  .filter-row-scroll { flex-wrap: wrap; margin-right: 0; padding-right: 0; overflow-x: visible; -webkit-mask-image: none; mask-image: none; }
   .discover-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
+  .interest-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .news-empty { grid-column: 1 / -1; }
   .news-headline { font-size: 1.4rem; }
 }

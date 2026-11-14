@@ -75,10 +75,15 @@
 
       <div class="issues-layout">
         <aside class="issues-sidebar">
+          <div id="issue-view" class="issue-view" hidden>
+            <p id="issue-view-label" class="filter-group-label">Issues to show</p>
+            <div class="filter-row" role="group" aria-labelledby="issue-view-label"></div>
+          </div>
           <fieldset class="issue-picker">
             <legend>Which issues matter most to you? (optional)</legend>
             <div id="issue-picker-options" class="issue-picker-options"></div>
             <p id="issue-picker-status" class="note" role="status"></p>
+            <p class="note">Your choices stay in this browser on this device and are not sent anywhere. Discover's My interests uses the same choices.</p>
           </fieldset>
 
           <button id="quiz-from-issues" class="compare-button" type="button">Where do my views fall?</button>
@@ -92,11 +97,13 @@
     <section id="discover-screen" class="screen" aria-labelledby="discover-heading" hidden>
       <button id="discover-back-button" class="link-button" type="button">&larr; Back</button>
       <h1 id="discover-heading" tabindex="-1">Discover</h1>
-      <p class="lead">Recent political developments in plain language, each with a link to the original source. Filter by issue or by elections.</p>
+      <p class="lead">Recent political developments in plain language, each with a link to the original source. Filter by issue or by elections, choose My interests to follow the topics you care about, and save the ones you want to come back to.</p>
       <p id="discover-checked" class="note"></p>
 
-      <div id="discover-filters" class="discover-filters" role="group" aria-label="Filter developments by topic"></div>
+      <div id="discover-filters" class="discover-filters"></div>
       <p id="discover-status" class="note" role="status"></p>
+      <div id="discover-interests" class="interests-panel" hidden></div>
+      <p id="discover-message" class="note discover-message" role="status"></p>
       <ul id="discover-list" class="discover-list"></ul>
     </section>
 
@@ -168,6 +175,7 @@
   <script src="data/quiz.js"></script>
   <script src="practice.js"></script>
   <script src="quiz.js"></script>
+  <script src="interests.js"></script>
   <script src="discover.js"></script>
   <script src="app.js"></script>
 </body>

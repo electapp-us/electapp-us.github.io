@@ -252,8 +252,8 @@ window.ILLINOIS_ELECTION = {
         { name: "Kwame Raoul", party: "Democratic" }
       ],
       source: {
-        label: "Wikipedia: 2026 Illinois Attorney General election",
-        url: "https://en.wikipedia.org/wiki/2026_Illinois_Attorney_General_election"
+        label: "Illinois State Board of Elections: 2026 primary results (party nominees)",
+        url: "https://www.elections.il.gov/electionoperations/ElectionVoteTotals.aspx?ID=Z2J%2fvYpKX8w%3d&OfficeType=LpWf6lpbWOfBN3kEuxRi3A%3d%3d"
       }
     },
     {

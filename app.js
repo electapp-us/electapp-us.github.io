@@ -14,7 +14,15 @@
   var issuePickerStatus = document.getElementById("issue-picker-status");
   var issuesReturnScreen = zipScreen;
   var issuesMode = "national";
-  var pickedIssueIds = [];
+  // The issue boxes read and write the shared interests list (interests.js), so Learn and Discover agree.
+  var syncIssuePicker = function () {};
+  var renderedInterests = "";
+  // Which issues Learn shows right now is a separate thing from the interests (the saved, ticked boxes).
+  // True means the reader chose "All issues" even though they have interests. It is kept while the page
+  // stays open (also when leaving Learn and coming back) and is never saved, so a refresh starts on
+  // My interests again.
+  var issueView = document.getElementById("issue-view");
+  var showingAllIssues = false;
   var practiceScreen = document.getElementById("practice-screen");
   var practiceList = document.getElementById("practice-list");
   var practiceReturnScreen = zipScreen;
@@ -352,39 +360,68 @@
     return section;
   }
 
-  // Shows every issue, or only the ones the visitor picked. Picks live in memory only, never saved.
+  // The two chips above the picker: My interests (the issues the visitor ticked) and All issues. They only
+  // change what is shown, never the interests themselves.
+  function buildIssueViewChips() {
+    var row = issueView.querySelector(".filter-row");
+    ["interests", "all"].forEach(function (view) {
+      var chip = element("button", "filter-chip", view === "all" ? "All issues" : "My interests");
+      chip.type = "button";
+      chip.setAttribute("data-view", view);
+      chip.addEventListener("click", function () {
+        showingAllIssues = view === "all";
+        renderIssueList();
+      });
+      row.appendChild(chip);
+    });
+  }
+
+  function updateIssueViewChips(interestCount, focused) {
+    issueView.hidden = interestCount === 0;
+    var interestsChip = issueView.querySelector('[data-view="interests"]');
+    interestsChip.textContent = "My interests (" + interestCount + ")";
+    interestsChip.setAttribute("aria-pressed", String(focused));
+    issueView.querySelector('[data-view="all"]').setAttribute("aria-pressed", String(!focused));
+  }
+
+  // Shows the issues the visitor chose, or every issue. The choices are the visitor's interests, kept in this
+  // browser and shared with Discover. Elections is an interest too, but Learn has no Elections section.
   function renderIssueList() {
     var topics = window.POSITION_TOPICS;
-    var picked = topics.filter(function (topic) {
-      return pickedIssueIds.indexOf(topic.id) !== -1;
-    });
-    var shown = picked.length > 0 ? picked : topics;
+    var picked = topics.filter(function (topic) { return window.INTERESTS.has(topic.id); });
+    // With nothing chosen there is nothing to switch between, so the next first choice narrows Learn again.
+    if (picked.length === 0) showingAllIssues = false;
+    var focused = picked.length > 0 && !showingAllIssues;
+    var shown = focused ? picked : topics;
+    renderedInterests = window.INTERESTS.ids().join();
 
     issueList.replaceChildren();
     shown.forEach(function (topic) {
       var card = renderIssue(topic);
-      if (picked.length > 0) card.open = true;
+      if (focused) card.open = true;
       issueList.appendChild(card);
     });
-    issuePickerStatus.textContent = picked.length > 0
-      ? "Showing " + picked.length + " of " + topics.length + " issues. Uncheck them to see all issues."
-      : "Showing all " + topics.length + " issues. Check the ones you care about to focus on them.";
+    updateIssueViewChips(picked.length, focused);
+
+    if (focused) {
+      issuePickerStatus.textContent = "Showing " + picked.length + " of " + topics.length +
+        " issues, your interests. They are also used in Discover. Choose All issues to see everything; " +
+        "your interests are kept.";
+    } else if (picked.length > 0) {
+      issuePickerStatus.textContent = "Showing all " + topics.length + " issues. " +
+        (picked.length === 1 ? "Your 1 interest is" : "Your " + picked.length + " interests are") +
+        " kept; choose My interests to focus on " + (picked.length === 1 ? "it" : "them") + ".";
+    } else {
+      issuePickerStatus.textContent = "Showing all " + topics.length +
+        " issues. Check the ones you care about to focus on them." +
+        (window.INTERESTS.has("elections") ? " Elections is also one of your interests; it applies in Discover." : "");
+    }
   }
 
   function renderIssuePicker() {
-    window.POSITION_TOPICS.forEach(function (topic) {
-      var label = element("label", "issue-option");
-      var checkbox = element("input");
-      checkbox.type = "checkbox";
-      checkbox.value = topic.id;
-      checkbox.addEventListener("change", function () {
-        pickedIssueIds = pickedIssueIds.filter(function (id) { return id !== topic.id; });
-        if (checkbox.checked) pickedIssueIds.push(topic.id);
-        renderIssueList();
-      });
-      label.appendChild(checkbox);
-      label.appendChild(element("span", null, topic.label));
-      issuePickerOptions.appendChild(label);
+    syncIssuePicker = window.renderInterestOptions(issuePickerOptions, window.POSITION_TOPICS, function (stored) {
+      renderIssueList();
+      if (!stored) issuePickerStatus.textContent += " " + window.INTERESTS.NOT_REMEMBERED;
     });
   }
 
@@ -404,6 +441,7 @@
     issuesMode = mode;
     document.getElementById("issues-heading").textContent = ISSUES_SCREEN_TEXT[mode].heading;
     document.getElementById("issues-lead").textContent = ISSUES_SCREEN_TEXT[mode].lead;
+    syncIssuePicker();
     renderIssueList();
     fromScreen.hidden = true;
     issuesScreen.hidden = false;
@@ -510,7 +548,9 @@
       filters: document.getElementById("discover-filters"),
       list: document.getElementById("discover-list"),
       status: document.getElementById("discover-status"),
-      checked: document.getElementById("discover-checked")
+      checked: document.getElementById("discover-checked"),
+      message: document.getElementById("discover-message"),
+      interests: document.getElementById("discover-interests")
     }, window.NEWS, options && options.filter);
     fromScreen.hidden = true;
     discoverScreen.hidden = false;
@@ -522,6 +562,12 @@
   function leaveDiscover() {
     discoverScreen.hidden = true;
     discoverReturnScreen.hidden = false;
+    // Interests may have been changed in Discover. Redraw Learn only then, so cards the reader had
+    // opened stay open when nothing changed.
+    if (discoverReturnScreen === issuesScreen && window.INTERESTS.ids().join() !== renderedInterests) {
+      syncIssuePicker();
+      renderIssueList();
+    }
     var card = discoverReturnIssueId &&
       issueList.querySelector('.issue-card[data-issue="' + discoverReturnIssueId + '"]');
     if (card) {
@@ -617,5 +663,6 @@
     showQuiz(quizReturnScreen);
   });
   renderIssuePicker();
+  buildIssueViewChips();
   document.getElementById("results-heading").setAttribute("tabindex", "-1");
 })();
