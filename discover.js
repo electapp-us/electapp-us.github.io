@@ -3,10 +3,10 @@
 // Colors on cards and filters identify the topic only. They never rate a source or a political side.
 // Readers can save a card with its Save button. A saved card is a copy of the card as it was when saved,
 // kept in this browser only (localStorage), so later edits to data/news.js never change what someone saved.
+// The saved list itself lives in saved.js (window.SAVED), which this file and My ELECTAPP share.
 (function () {
   var MONTHS = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
   var DATE_WORDS = { published: "Published", updated: "Updated", decided: "Decided" };
-  var SAVED_KEY = "electapp-saved";
 
   // Short names for the filter buttons and tags, so they fit on a phone.
   var SHORT_LABELS = {
@@ -38,6 +38,15 @@
   // For example "Published Nov. 4, 2026". Court opinions say "Decided" and updated pages say "Updated".
   window.newsDateLabel = function (card) {
     return DATE_WORDS[card.dateKind || "published"] + " " + formatDate(card.published);
+  };
+
+  // For example "Nov. 4, 2026", from a date written "2026-11-04".
+  window.formatNewsDate = formatDate;
+
+  // The label for an election result that news organizations have called but states have not certified yet
+  // (empty for every other card). Discover and My ELECTAPP show the same words.
+  window.newsStatusLabel = function (card) {
+    return card.resultStatus === "called" ? "Called by AP · not yet officially certified" : "";
   };
 
   // Newest first; cards with the same date keep their order from the data file.
@@ -83,83 +92,28 @@
     });
   }
 
+  window.interestTopics = interestTopics;
+
   // ["Elections", "Economy", "Health care"] becomes "Elections, Economy and Health care".
   function listInWords(items) {
     if (items.length < 2) return items.join("");
     return items.slice(0, -1).join(", ") + " and " + items[items.length - 1];
   }
 
-  // Saved cards come back from storage, which anyone can edit, so only well-formed copies are used and
-  // links must be https. Anything else is dropped instead of being shown.
-  function isText(value) { return typeof value === "string" && value.length > 0; }
+  // What to tell the reader about a saved copy whose original has changed or gone (see SAVED.status in saved.js).
+  // My ELECTAPP shows the same sentences.
+  var SAVED_STATUS_TEXT = {
+    updated: "We have updated this story since. You are seeing the version you saved.",
+    removed: "We no longer list this development."
+  };
 
-  function looksLikeCard(card) {
-    if (!card || typeof card !== "object") return false;
-    var fields = ["id", "headline", "preview", "summary", "happened", "publisher", "url", "published"];
-    if (!fields.every(function (field) { return isText(card[field]); })) return false;
-    if (!/^https:\/\//.test(card.url) || !/^\d{4}-\d{2}-\d{2}$/.test(card.published)) return false;
-    if (!Array.isArray(card.tags) || card.tags.length === 0 || !card.tags.every(isText)) return false;
-    if (card.dateKind !== undefined && !DATE_WORDS.hasOwnProperty(card.dateKind)) return false;
-    if (card.uncertain !== undefined && typeof card.uncertain !== "string") return false;
-    if (card.resultStatus !== undefined && typeof card.resultStatus !== "string") return false;
-    return (card.moreSources === undefined || (Array.isArray(card.moreSources) && card.moreSources.every(function (source) {
-      return source && isText(source.publisher) && /^https:\/\//.test(source.url) && isText(source.published);
-    })));
-  }
-
-  // Newest saved first. Returns [] when nothing is saved, storage is blocked, or the stored text is damaged.
-  function readSaved() {
-    try {
-      var items = JSON.parse(localStorage.getItem(SAVED_KEY));
-      if (!Array.isArray(items)) return [];
-      var seen = {};
-      return items.filter(function (entry) {
-        var valid = entry && /^\d{4}-\d{2}-\d{2}$/.test(entry.savedOn) && looksLikeCard(entry.card) && !seen[entry.card.id];
-        if (valid) seen[entry.card.id] = true;
-        return valid;
-      });
-    } catch (error) {
-      return [];
-    }
-  }
-
-  // True only when the list was stored and reads back the same; false when the browser refuses.
-  function writeSaved(items) {
-    try {
-      var text = JSON.stringify(items);
-      localStorage.setItem(SAVED_KEY, text);
-      return localStorage.getItem(SAVED_KEY) === text;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  // The same card has the same text whatever order its fields were written in.
-  function stableText(value) {
-    if (Array.isArray(value)) return "[" + value.map(stableText).join(",") + "]";
-    if (value && typeof value === "object") {
-      return "{" + Object.keys(value).sort().map(function (key) {
-        return JSON.stringify(key) + ":" + stableText(value[key]);
-      }).join(",") + "}";
-    }
-    return JSON.stringify(value);
-  }
-
-  function todayIso() {
-    function twoDigits(number) { return (number < 10 ? "0" : "") + number; }
-    var now = new Date();
-    return now.getFullYear() + "-" + twoDigits(now.getMonth() + 1) + "-" + twoDigits(now.getDate());
-  }
+  window.savedStatusText = function (status) { return SAVED_STATUS_TEXT[status] || ""; };
 
   function savedNote(entry, currentCards) {
     var note = "Saved " + formatDate(entry.savedOn) + ". This is a copy from when you saved it, " +
       "so it may not reflect the latest developments.";
-    var current = currentCards.filter(function (card) { return card.id === entry.card.id; })[0];
-    if (!current) return note + " We no longer list this development.";
-    if (stableText(current) !== stableText(entry.card)) {
-      return note + " We have updated this story since. You are seeing the version you saved.";
-    }
-    return note;
+    var status = window.SAVED.status(entry, currentCards);
+    return status === "same" ? note : note + " " + SAVED_STATUS_TEXT[status];
   }
 
   function bookmarkIcon() {
@@ -250,8 +204,8 @@
 
     item.appendChild(element("h2", "news-headline", card.headline));
 
-    if (card.resultStatus === "called") {
-      item.appendChild(element("p", "news-status", "Called by AP · not yet officially certified"));
+    if (window.newsStatusLabel(card)) {
+      item.appendChild(element("p", "news-status", window.newsStatusLabel(card)));
     }
 
     item.appendChild(element("p", "news-preview", card.preview));
@@ -299,7 +253,7 @@
     }
 
     function updateSavedCount() {
-      var count = readSaved().length;
+      var count = window.SAVED.count();
       els.filters.querySelector('[data-filter="saved"]').textContent = count > 0 ? "Saved (" + count + ")" : "Saved";
     }
 
@@ -381,9 +335,7 @@
     }
 
     function saveCard(card, button) {
-      var items = readSaved().filter(function (entry) { return entry.card.id !== card.id; });
-      items.unshift({ savedOn: todayIso(), card: JSON.parse(JSON.stringify(card)) });
-      if (!writeSaved(items)) {
+      if (!window.SAVED.save(card)) {
         showMessage("Couldn't save this. Your browser isn't letting this page store anything (this can happen " +
           "in a private window), so nothing was saved.", true);
         return;
@@ -394,8 +346,7 @@
     }
 
     function removeCard(card, button, inSavedList) {
-      var items = readSaved().filter(function (entry) { return entry.card.id !== card.id; });
-      if (!writeSaved(items)) {
+      if (!window.SAVED.remove(card.id)) {
         showMessage("Couldn't remove this. Your browser isn't letting this page change what is stored, " +
           "so nothing was changed.", true);
         return;
@@ -453,7 +404,7 @@
     }
 
     function showSavedCards() {
-      var entries = readSaved();
+      var entries = window.SAVED.entries();
       els.list.replaceChildren();
       if (entries.length === 0) {
         els.list.appendChild(renderEmptyState());
@@ -478,7 +429,7 @@
         return;
       }
       var savedIds = {};
-      readSaved().forEach(function (entry) { savedIds[entry.card.id] = true; });
+      window.SAVED.entries().forEach(function (entry) { savedIds[entry.card.id] = true; });
       var shown = cards.filter(function (card) {
         if (selected === "all") return true;
         if (selected === "interests") return window.INTERESTS.matches(card);

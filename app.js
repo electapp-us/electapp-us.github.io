@@ -33,6 +33,8 @@
   var quizResultsScreen = document.getElementById("quiz-results-screen");
   var quizReturnScreen = zipScreen;
   var quizAnswers = {};
+  var myScreen = document.getElementById("my-screen");
+  var myReturnScreen = zipScreen;
 
   var ERROR_MESSAGES = {
     format: "Please enter a 5-digit zip code, like 61820.",
@@ -436,17 +438,29 @@
     }
   };
 
-  function showIssues(fromScreen, mode) {
+  // options (optional): { openIssueId, backLabel } when arriving from My ELECTAPP, so that issue opens and
+  // Back says where it goes.
+  function showIssues(fromScreen, mode, options) {
     issuesReturnScreen = fromScreen;
     issuesMode = mode;
     document.getElementById("issues-heading").textContent = ISSUES_SCREEN_TEXT[mode].heading;
     document.getElementById("issues-lead").textContent = ISSUES_SCREEN_TEXT[mode].lead;
+    document.getElementById("issues-back-button").textContent =
+      "← Back" + (options && options.backLabel ? " to " + options.backLabel : "");
     syncIssuePicker();
     renderIssueList();
     fromScreen.hidden = true;
     issuesScreen.hidden = false;
     window.scrollTo(0, 0);
-    document.getElementById("issues-heading").focus();
+    var card = options && options.openIssueId &&
+      issueList.querySelector('.issue-card[data-issue="' + options.openIssueId + '"]');
+    if (card) {
+      card.open = true;
+      card.scrollIntoView();
+      card.querySelector("summary").focus({ preventScroll: true });
+    } else {
+      document.getElementById("issues-heading").focus();
+    }
   }
 
   function renderQuizTopic(topic) {
@@ -534,6 +548,7 @@
     quizScreen.hidden = true;
     quizResultsScreen.hidden = true;
     quizReturnScreen.hidden = false;
+    refreshReturnedScreen(quizReturnScreen);
     window.scrollTo(0, 0);
   }
 
@@ -562,6 +577,7 @@
   function leaveDiscover() {
     discoverScreen.hidden = true;
     discoverReturnScreen.hidden = false;
+    refreshReturnedScreen(discoverReturnScreen);
     // Interests may have been changed in Discover. Redraw Learn only then, so cards the reader had
     // opened stay open when nothing changed.
     if (discoverReturnScreen === issuesScreen && window.INTERESTS.ids().join() !== renderedInterests) {
@@ -579,6 +595,62 @@
     }
   }
 
+  // My ELECTAPP shows the reader's own interests and saved stories, and the first screen summarises them.
+  // Those two screens are redrawn whenever they come back into view, so a change made in Discover, Learn,
+  // or My ELECTAPP itself is never missing when the reader returns.
+  function refreshMyEntry() {
+    var interests = window.INTERESTS.ids().length;
+    var saved = window.SAVED.count();
+    document.getElementById("my-entry-summary").textContent = interests === 0 && saved === 0
+      ? "Follow topics and save stories"
+      : interests + (interests === 1 ? " interest" : " interests") + " · " + saved + " saved";
+  }
+
+  function openDiscoverFromMy(topicId) {
+    showDiscover(myScreen, topicId ? { filter: topicId, backLabel: "My ELECTAPP" } : { backLabel: "My ELECTAPP" });
+  }
+
+  function openLearnFromMy(topicId) {
+    showIssues(myScreen, "national", { openIssueId: topicId, backLabel: "My ELECTAPP" });
+  }
+
+  function renderMy() {
+    window.renderMyScreen({
+      message: document.getElementById("my-message"),
+      pills: document.getElementById("my-pills"),
+      interestsEmpty: document.getElementById("my-interests-empty"),
+      add: document.getElementById("my-add"),
+      addDone: document.getElementById("my-add-done"),
+      options: document.getElementById("my-options"),
+      briefingSection: document.getElementById("my-briefing-section"),
+      briefing: document.getElementById("my-briefing"),
+      saved: document.getElementById("my-saved"),
+      savedLead: document.getElementById("my-saved-lead"),
+      savedHeading: document.getElementById("my-saved-heading")
+    }, { openDiscover: openDiscoverFromMy, openLearn: openLearnFromMy });
+  }
+
+  function refreshReturnedScreen(screen) {
+    if (screen === zipScreen) refreshMyEntry();
+    else if (screen === myScreen) renderMy();
+  }
+
+  function showMy(fromScreen) {
+    myReturnScreen = fromScreen;
+    renderMy();
+    fromScreen.hidden = true;
+    myScreen.hidden = false;
+    window.scrollTo(0, 0);
+    document.getElementById("my-heading").focus();
+  }
+
+  function leaveMy() {
+    myScreen.hidden = true;
+    myReturnScreen.hidden = false;
+    refreshReturnedScreen(myReturnScreen);
+    window.scrollTo(0, 0);
+  }
+
   function showPractice(fromScreen) {
     practiceReturnScreen = fromScreen;
     window.renderPractice(practiceList);
@@ -591,12 +663,14 @@
   function leavePractice() {
     practiceScreen.hidden = true;
     practiceReturnScreen.hidden = false;
+    refreshReturnedScreen(practiceReturnScreen);
     window.scrollTo(0, 0);
   }
 
   function leaveIssues() {
     issuesScreen.hidden = true;
     issuesReturnScreen.hidden = false;
+    refreshReturnedScreen(issuesReturnScreen);
     window.scrollTo(0, 0);
   }
 
@@ -608,6 +682,7 @@
   function showZipScreen() {
     resultsScreen.hidden = true;
     zipScreen.hidden = false;
+    refreshMyEntry();
     zipInput.focus();
   }
 
@@ -637,6 +712,10 @@
     showDiscover(zipScreen);
   });
   document.getElementById("discover-back-button").addEventListener("click", leaveDiscover);
+  document.getElementById("my-from-zip").addEventListener("click", function () {
+    showMy(zipScreen);
+  });
+  document.getElementById("my-back-button").addEventListener("click", leaveMy);
   document.getElementById("illinois-by-issue").addEventListener("click", function () {
     showIssues(resultsScreen, "illinois");
   });
@@ -664,5 +743,6 @@
   });
   renderIssuePicker();
   buildIssueViewChips();
+  refreshMyEntry();
   document.getElementById("results-heading").setAttribute("tabindex", "-1");
 })();
