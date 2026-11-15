@@ -212,6 +212,8 @@ a { color: var(--text); }
 .item-text { margin: 0.1rem 0 0.25rem; }
 .item-source { font-size: 0.85rem; color: var(--text-muted); }
 .no-position { margin: 0; font-style: italic; color: var(--text-muted); }
+.item-note { margin: 0.25rem 0 0; font-size: 0.85rem; font-style: italic; color: var(--text-muted); }
+.no-record { margin-top: 0.5rem; font-size: 0.9rem; }
 
 .learn-prompt { margin-top: 1.5rem; }
 .reference { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--card-border); }
@@ -852,4 +854,136 @@ a { color: var(--text); }
 .empty-show-all { margin-top: 0.75rem; }
 @media (min-width: 900px) {
   .empty-show-all { width: auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+
+/* Profiles: a header card (name, role, party, round initials avatar), then four sections as tabs. The avatar is
+   the same neutral color for everyone; party is shown only as the small label. */
+.profile-link {
+  font: inherit;
+  font-size: 0.9rem;
+  min-height: 2.75rem;
+  padding: 0.25rem 0;
+  color: var(--text);
+  background: none;
+  border: 0;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.candidate-details .profile-link { align-self: flex-start; }
+.topic-candidate-header { flex-wrap: wrap; }
+.topic-candidate-header .profile-link { flex-basis: 100%; min-height: 2.75rem; }
+
+.profile-layout { display: grid; gap: 1.25rem; }
+.profile-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 1rem;
+  row-gap: 0.35rem;
+  align-items: start;
+  padding: 1.25rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1.1rem;
+}
+.profile-identity { grid-column: 1; grid-row: 1; min-width: 0; }
+.profile-header h1 { margin: 0 0 0.25rem; font-size: 1.75rem; overflow-wrap: anywhere; }
+.profile-role { margin: 0 0 0.6rem; }
+.profile-asof { color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
+.profile-facts { margin: 0; }
+.profile-avatar {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+.profile-race, .profile-checked { grid-column: 1 / -1; margin: 0.5rem 0 0; font-size: 0.9rem; color: var(--text-muted); }
+.profile-checked { margin-top: 0.2rem; }
+
+.profile-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0 0 1rem; }
+.profile-tab {
+  min-height: 2.75rem;
+  padding: 0.35rem 0.6rem;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: none;
+  border: 2px solid var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.profile-tab[aria-selected="true"] { color: var(--bg); background: var(--text); border-color: var(--text); }
+
+.profile-panel { min-width: 0; }
+.profile-panel-note { margin: 0 0 1rem; font-size: 0.9rem; color: var(--text-muted); }
+.profile-subheading { margin: 1.5rem 0 0.6rem; font-size: 1.15rem; }
+.profile-panel > .profile-subheading:first-child { margin-top: 0; }
+
+.profile-bio, .profile-empty, .coverage-group, .action-card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+.profile-bio p { margin: 0 0 0.75rem; }
+.profile-bio .profile-bio-sources { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+.profile-bio-sources a, .role-source, .item-source, .coverage-group a { color: var(--text-muted); }
+.profile-empty { margin: 0 0 1rem; border-style: dashed; border-color: var(--accent); }
+
+.role-timeline { list-style: none; margin: 0; padding: 0 0 0 0.9rem; border-left: 2px solid var(--card-border); }
+.role-timeline li { display: flex; flex-direction: column; gap: 0.1rem; margin: 0 0 1rem; }
+.role-title { font-weight: bold; }
+.role-when { font-size: 0.9rem; color: var(--text-muted); }
+.role-source { font-size: 0.85rem; }
+.role-timeline a, .source-list a, .reporting-list a { overflow-wrap: anywhere; }
+
+.profile-panel .topic { margin-bottom: 0.75rem; border-left: 4px solid rgb(var(--topic-rgb, var(--t-elections-rgb))); }
+.profile-item { padding: 0.6rem 0 0.9rem; border-top: 1px solid var(--card-border); }
+.profile-panel .position-list { padding-bottom: 0.25rem; }
+.item-setting { margin: 0.2rem 0 0; font-size: 0.9rem; color: var(--text-muted); }
+.item-quote { margin: 0.35rem 0 0.2rem; padding: 0.15rem 0 0.15rem 0.9rem; border-left: 3px solid var(--accent); font-size: 1.05rem; }
+.item-quote p { margin: 0; }
+.item-quote-by { margin: 0 0 0.45rem; font-size: 0.85rem; color: var(--text-muted); }
+.item-reporter { margin: 0.2rem 0 0.35rem; font-size: 0.95rem; }
+.profile-missing { margin-top: 0.75rem; }
+
+.action-list, .coverage-entries, .reporting-list, .source-list { list-style: none; margin: 0; padding: 0; }
+.action-list { display: grid; gap: 0.9rem; }
+.action-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.4rem 0.75rem; margin-bottom: 0.4rem; }
+.action-date { font-weight: bold; }
+.action-card .item-text { margin: 0 0 0.35rem; }
+
+.coverage-group { margin: 0 0 1rem; }
+.coverage-group h3 { margin: 0 0 0.6rem; font-size: 1.1rem; line-height: 1.25; }
+.coverage-entry { padding: 0.6rem 0 0.8rem; border-top: 1px solid var(--card-border); }
+.coverage-when { display: block; font-size: 0.85rem; font-weight: bold; letter-spacing: 0.02em; color: var(--text-muted); }
+.coverage-entry .item-text { margin: 0.2rem 0 0.3rem; }
+.coverage-caveat { margin: 0.4rem 0 0; font-size: 0.85rem; font-style: italic; color: var(--text-muted); }
+
+.reporting-list li, .source-list li { margin: 0 0 0.5rem; }
+.source-group { margin: 0 0 1rem; }
+.source-group h3 { margin: 0 0 0.4rem; font-size: 1rem; }
+.source-list { font-size: 0.92rem; }
+
+:root[data-theme="contrast"] .profile-header,
+:root[data-theme="contrast"] .profile-bio,
+:root[data-theme="contrast"] .profile-empty,
+:root[data-theme="contrast"] .coverage-group,
+:root[data-theme="contrast"] .action-card { border-width: 2px; }
+
+@media (min-width: 900px) {
+  /* The header stays in view on the left while the sections fill the rest. */
+  .profile-layout { grid-template-columns: 22rem minmax(0, 1fr); column-gap: 2.5rem; align-items: start; }
+  .profile-header { position: sticky; top: 1.5rem; }
+  .profile-tabs { grid-template-columns: repeat(4, auto); justify-content: start; }
+  .profile-tab { padding: 0.35rem 1.1rem; }
+  .action-list { grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); align-items: start; }
 }

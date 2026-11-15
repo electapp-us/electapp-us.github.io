@@ -203,15 +203,23 @@
       <p id="compare-subtitle" class="lead"></p>
 
       <div class="notice" role="note">
-        Positions are summarized from each candidate's own website where possible, and from named news
-        interviews otherwise. We don't rate or label anyone. Read the linked sources for the full picture.
+        Each item says what kind of information it is: what a candidate says, their own account of what they
+        did, a documented record from an official source, or what news reports. A candidate's own account is
+        never shown as a verified fact. We don't rate or judge anyone. Read the linked sources for the full picture.
       </div>
 
       <div id="topic-list" class="topic-list"></div>
     </section>
+
+    <section id="profile-screen" class="screen" aria-labelledby="profile-heading" hidden>
+      <button id="profile-back-button" class="link-button" type="button">&larr; Back</button>
+      <div id="profile-body"></div>
+    </section>
   </main>
 
   <script src="data/illinois-races.js"></script>
+  <script src="data/people.js"></script>
+  <script src="people.js"></script>
   <script src="data/issues.js"></script>
   <script src="data/illinois-issues.js"></script>
   <script src="data/party-platforms.js"></script>
@@ -225,6 +233,7 @@
   <script src="saved.js"></script>
   <script src="discover.js"></script>
   <script src="my.js"></script>
+  <script src="profile.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

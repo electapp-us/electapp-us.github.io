@@ -35,6 +35,12 @@
   var quizAnswers = {};
   var myScreen = document.getElementById("my-screen");
   var myReturnScreen = zipScreen;
+  // A profile can be opened from the race cards, the comparison, and Learn's Illinois view; Back returns to
+  // whichever one it was opened from, at the same place, with focus back on the button that was pressed.
+  var profileScreen = document.getElementById("profile-screen");
+  var profileReturnScreen = zipScreen;
+  var profileOpener = null;
+  var profileReturnScroll = 0;
 
   var ERROR_MESSAGES = {
     format: "Please enter a 5-digit zip code, like 61820.",
@@ -58,12 +64,46 @@
     var key = party.toLowerCase();
     return known.indexOf(key) === -1 ? "party-other" : "party-" + key;
   }
+  window.partyClass = partyClass;
 
   function element(tag, className, text) {
     var node = document.createElement(tag);
     if (className) node.className = className;
     if (text) node.textContent = text;
     return node;
+  }
+
+  // The way into a person's profile from anywhere a candidate is shown (only candidates linked to a person have one).
+  function profileButton(candidate) {
+    var button = element("button", "profile-link", "View profile →");
+    button.type = "button";
+    button.setAttribute("data-person", candidate.personId);
+    button.setAttribute("aria-label", "View profile: " + candidate.name);
+    button.addEventListener("click", function () { showProfile(candidate.personId, button); });
+    return button;
+  }
+
+  function showProfile(personId, opener) {
+    var person = window.personById(personId);
+    if (!person) return;
+    var from = document.querySelector(".screen:not([hidden])");
+    profileReturnScreen = from;
+    profileOpener = opener;
+    profileReturnScroll = window.scrollY;
+    var backLabels = { "results-screen": "races", "compare-screen": "comparison", "issues-screen": "Learn" };
+    document.getElementById("profile-back-button").textContent = "← Back to " + (backLabels[from.id] || "where you were");
+    window.renderProfileScreen(document.getElementById("profile-body"), person);
+    from.hidden = true;
+    profileScreen.hidden = false;
+    window.scrollTo(0, 0);
+    document.getElementById("profile-heading").focus();
+  }
+
+  function leaveProfile() {
+    profileScreen.hidden = true;
+    profileReturnScreen.hidden = false;
+    if (profileOpener && document.body.contains(profileOpener)) profileOpener.focus({ preventScroll: true });
+    window.scrollTo(0, profileReturnScroll);
   }
 
   function renderCandidate(candidate) {
@@ -75,6 +115,7 @@
     if (candidate.runningMate) {
       details.appendChild(element("span", "running-mate", "with " + candidate.runningMate));
     }
+    if (candidate.personId) details.appendChild(profileButton(candidate));
     item.appendChild(details);
 
     item.appendChild(element("span", "party-chip " + partyClass(candidate.party), candidate.party));
@@ -127,13 +168,6 @@
     document.getElementById("results-heading").focus();
   }
 
-  var ITEM_TYPE_LABELS = {
-    says: "Their stated position",
-    record: "Record in office",
-    reported: "As reported by news",
-    platform: "Party platform"
-  };
-
   // Plain statement of who has a position on file for a topic; never a judgment of the positions.
   function describeCoverage(race, topicId) {
     var withPositions = race.candidates.filter(function (candidate) {
@@ -146,8 +180,9 @@
   }
 
   function renderPositionItem(item) {
+    var kind = window.itemKind(item);
     var entry = element("li", "position-item");
-    entry.appendChild(element("span", "item-type item-type-" + item.type, ITEM_TYPE_LABELS[item.type]));
+    entry.appendChild(element("span", "item-type item-type-" + kind, window.ITEM_LABELS[kind]));
     entry.appendChild(element("p", "item-text", item.text));
     var link = element("a", "item-source", "Source: " + item.source.label);
     link.href = item.source.url;
@@ -162,6 +197,7 @@
     var header = element("div", "topic-candidate-header");
     header.appendChild(element("span", "candidate-name", candidate.name));
     header.appendChild(element("span", "party-chip " + partyClass(candidate.party), candidate.party));
+    if (candidate.personId) header.appendChild(profileButton(candidate));
     block.appendChild(header);
 
     var items = race.positions[topicId][candidate.name] || [];
@@ -173,6 +209,13 @@
         list.appendChild(renderPositionItem(item));
       });
       block.appendChild(list);
+    }
+
+    // For a person with a profile, say plainly when no action from official records has been added for this
+    // issue yet. This is about what has been added, not a claim that they have done nothing.
+    var hasDocumentedRecord = items.some(function (item) { return item.type === "record"; });
+    if (candidate.personId && !hasDocumentedRecord) {
+      block.appendChild(element("p", "no-position no-record", window.PEOPLE.noRecordText));
     }
 
     var gap = race.gaps && race.gaps[topicId] && race.gaps[topicId][candidate.name];
@@ -192,7 +235,8 @@
   function showComparison(race) {
     document.getElementById("compare-heading").textContent = race.office + ": compare positions";
     document.getElementById("compare-subtitle").textContent =
-      "Where each candidate stands, topic by topic. Last checked " + race.positionsCheckedOn + ".";
+      "Where each candidate stood before Election Day, topic by topic. Positions first found " +
+      race.positionsCheckedOn + "; sources rechecked " + race.sourcesRecheckedOn + ".";
 
     var topicList = document.getElementById("topic-list");
     topicList.replaceChildren();
@@ -702,6 +746,7 @@
   zipInput.addEventListener("input", clearError);
   backButton.addEventListener("click", showZipScreen);
   document.getElementById("compare-back-button").addEventListener("click", showResultsAgain);
+  document.getElementById("profile-back-button").addEventListener("click", leaveProfile);
   document.getElementById("learn-from-zip").addEventListener("click", function () {
     showIssues(zipScreen, "national");
   });
