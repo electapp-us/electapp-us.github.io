@@ -226,7 +226,7 @@
             {
               type: "reported",
               basis: "summary",
-              text: "Reported in October 2025: she proposed bringing the Illinois Birth Equity Initiative, which she helped oversee, to the federal level (the Illinois law requires state-regulated plans to cover pregnancy and postpartum services for up to 12 months after a pregnancy ends), expanding federal \"parity laws\" so mental health treatments are covered like physical health treatments, and requiring Medicare to cover long-term care home services.",
+              text: "Reported in October 2025: she proposed bringing the Illinois Birth Equity Initiative, which she helped oversee, to the federal level (the Illinois law requires state-regulated plans to cover pregnancy and postpartum services for up to 12 months after a pregnancy ends), expanding federal \"parity laws\" so mental health treatments are covered like physical health treatments, and requiring Medicare to cover long-term care home services as well as vision and hearing services.",
               source: capitolNewsStratton,
               audit: VERIFIED
             },
@@ -293,7 +293,7 @@
             },
             {
               type: "says",
-              text: "Lists \"Abolishing ICE\" (U.S. Immigration and Customs Enforcement) among her key legislative priorities.",
+              text: "Lists \"Abolishing ICE\" among her key legislative priorities.",
               source: strattonSite,
               audit: VERIFIED
             },
@@ -511,8 +511,8 @@
             title: "Ethics investigation during Tracy's time as Illinois Gaming Board chairman",
             entries: [
               {
-                when: "September 2019: report released",
-                text: "The Illinois Office of Executive Inspector General (OEIG) released a report on Tracy, who had chaired the Illinois Gaming Board until mid-June 2019. The Associated Press reported that the report said Tracy made \"loans and contributions either directly, or through his wife, to political committees\" in violation of state law. Tracy was quoted as calling the report \"baseless speculation.\"",
+                when: "Reported September 19, 2019",
+                text: "The Illinois Office of Executive Inspector General (OEIG) released a report on Tracy, who had chaired the Illinois Gaming Board until mid-June 2019. The Associated Press reported that the report, dated May 31, said Tracy made \"loans and contributions either directly, or through his wife, to political committees\" in violation of state law. The AP reported that Tracy told the Chicago Tribune the report was \"baseless speculation.\"",
                 source: apGamingReport,
                 audit: VERIFIED
               },
