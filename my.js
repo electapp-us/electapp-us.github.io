@@ -29,10 +29,53 @@
     return meta;
   }
 
+  // Until the reader asks for all of them, this many saved stories show, so the topic
+  // briefings below stay within reach however many stories are saved.
+  var SAVED_SHOWN_AT_FIRST = 3;
+
+  // The topic tags of a saved story, like the tags on Discover's cards, so a card's color never carries meaning alone.
+  function topicTags(card, topics) {
+    var list = element("ul", "news-tags");
+    card.tags.forEach(function (tag) {
+      var match = topics.filter(function (topic) { return topic.id === tag; })[0];
+      var chip = element("li", "tag-chip", match ? match.label : tag);
+      chip.setAttribute("data-tag", tag);
+      list.appendChild(chip);
+    });
+    return list;
+  }
+
+  // The page order depends on the width, and the page's own order (what a keyboard or
+  // screen reader follows) is kept the same as what is shown: on a phone it is interests, saved stories, then
+  // the topic briefings, so saved stories are not buried under a long briefing; on a laptop the briefing is the
+  // left column and the saved stories the right one. The same breakpoint as the two-column layout in styles.css.
+  var wideScreen = window.matchMedia ? window.matchMedia("(min-width: 900px)") : null;
+  var shownElements = null;
+
+  function placeSections() {
+    if (!shownElements) return;
+    var briefing = shownElements.briefingSection;
+    var saved = shownElements.saved.closest("section");
+    var focused = document.activeElement;
+    var wide = Boolean(wideScreen && wideScreen.matches);
+    briefing.parentNode.insertBefore(wide ? briefing : saved, wide ? saved : briefing);
+    // Moving an element can drop keyboard focus; put it back.
+    if (focused && focused !== document.body && document.activeElement !== focused && document.body.contains(focused)) focused.focus();
+  }
+
+  if (wideScreen) {
+    if (wideScreen.addEventListener) wideScreen.addEventListener("change", placeSections);
+    else if (wideScreen.addListener) wideScreen.addListener(placeSections);
+    // Also on resize, in case a browser reports the change late (it is cheap and does nothing if nothing moved).
+    window.addEventListener("resize", placeSections);
+  }
+
   // els: the elements of the My ELECTAPP screen (see index.html).
   // actions: { openDiscover(topicId or null), openLearn(topicId) }, which open those screens from here.
   window.renderMyScreen = function (els, actions) {
     var topics = window.interestTopics();
+    var savedOpen = false; // whether "Show all" has been pressed since this screen was opened
+    shownElements = els;
 
     // Confirms a removal, or explains that the browser would not store a change.
     function showMessage(text, isError) {
@@ -140,6 +183,7 @@
         row.setAttribute("data-id", card.id);
         row.setAttribute("data-status", status);
         row.setAttribute("data-topic", card.tags[0]);
+        row.appendChild(topicTags(card, topics));
         row.appendChild(element("p", "briefing-headline", card.headline));
         if (window.newsStatusLabel(card)) row.appendChild(element("p", "news-status", window.newsStatusLabel(card)));
         row.appendChild(metaLine(card));
@@ -156,6 +200,29 @@
         row.appendChild(footer);
         els.saved.appendChild(row);
       });
+      if (entries.length > SAVED_SHOWN_AT_FIRST) els.saved.appendChild(moreSavedButton(entries.length));
+    }
+
+    // The "Show all 8 saved stories" / "Show fewer" button at the end of a long saved list.
+    function moreSavedButton(total) {
+      var item = element("li", "saved-more");
+      var button = element("button", "my-action saved-more-toggle");
+      button.type = "button";
+      button.setAttribute("aria-controls", els.saved.id);
+      function show() {
+        button.setAttribute("aria-expanded", String(savedOpen));
+        button.textContent = savedOpen ? "Show fewer" : "Show all " + total + " saved stories";
+        [].forEach.call(els.saved.querySelectorAll(".my-saved-row"), function (row, index) {
+          row.hidden = !savedOpen && index >= SAVED_SHOWN_AT_FIRST;
+        });
+      }
+      button.addEventListener("click", function () {
+        savedOpen = !savedOpen;
+        show();
+      });
+      show();
+      item.appendChild(button);
+      return item;
     }
 
     function removeInterest(topic, pill) {
@@ -179,7 +246,8 @@
         return;
       }
       renderSaved();
-      var buttons = els.saved.querySelectorAll(".bookmark-button");
+      // Only stories that are shown can take focus (the rest of a long list is folded away).
+      var buttons = els.saved.querySelectorAll(".my-saved-row:not([hidden]) .bookmark-button");
       (buttons[Math.min(position, buttons.length - 1)] || els.savedHeading).focus();
       showMessage("Removed from Saved.");
     }
@@ -204,5 +272,6 @@
     // Open by itself only for someone with no interests yet, so the cards stay the main thing otherwise.
     els.add.open = window.INTERESTS.ids().length === 0;
     showMessage("");
+    placeSections();
   };
 })();

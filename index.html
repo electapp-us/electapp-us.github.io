@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="look-book">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ELECTAPP – A plain-language guide to U.S. politics</title>
   <meta name="description" content="A neutral, plain-language guide to U.S. political issues, what the major parties say, and where your own views fall, with an Illinois 2026 election reference.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Jeju+Gothic&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="display.js"></script>
 </head>
 <body>
   <main class="app">
-    <section id="zip-screen" class="screen" aria-labelledby="zip-heading">
+    <section id="zip-screen" class="screen book-screen" aria-labelledby="zip-heading">
       <h1 id="zip-heading">Understand U.S. politics, in plain language</h1>
       <p class="lead">ELECTAPP explains the issues, what the major parties say, and where your own views fall. It does not endorse anyone.</p>
 
@@ -48,7 +45,7 @@
       </div>
     </section>
 
-    <section id="results-screen" class="screen" aria-labelledby="results-heading" hidden>
+    <section id="results-screen" class="screen book-screen" aria-labelledby="results-heading" hidden>
       <button id="back-button" class="link-button" type="button">&larr; Change zip code</button>
       <h1 id="results-heading">Illinois 2026 election reference</h1>
       <p id="results-subtitle" class="lead"></p>
@@ -68,14 +65,14 @@
       <button id="practice-from-results" class="compare-button" type="button">Practice reading politics</button>
     </section>
 
-    <section id="practice-screen" class="screen" aria-labelledby="practice-heading" hidden>
+    <section id="practice-screen" class="screen book-screen" aria-labelledby="practice-heading" hidden>
       <button id="practice-back-button" class="link-button" type="button">&larr; Back</button>
       <h1 id="practice-heading" tabindex="-1">Practice reading politics</h1>
       <p class="lead">Three quick activities that work for any election. Tap your answer to see why. Nothing is scored, saved, or recommended.</p>
       <div id="practice-list" class="practice-list"></div>
     </section>
 
-    <section id="issues-screen" class="screen" aria-labelledby="issues-heading" hidden>
+    <section id="issues-screen" class="screen book-screen" aria-labelledby="issues-heading" hidden>
       <button id="issues-back-button" class="link-button" type="button">&larr; Back</button>
       <h1 id="issues-heading" tabindex="-1">Learn about the issues</h1>
       <p id="issues-lead" class="lead"></p>
@@ -103,9 +100,16 @@
 
     <section id="discover-screen" class="screen" aria-labelledby="discover-heading" hidden>
       <button id="discover-back-button" class="link-button" type="button">&larr; Back</button>
-      <h1 id="discover-heading" tabindex="-1">Discover</h1>
-      <p class="lead">Recent political developments in plain language, each with a link to the original source. Filter by issue or by elections, choose My interests to follow the topics you care about, and save the ones you want to come back to.</p>
+      <div class="discover-title-row">
+        <h1 id="discover-heading" tabindex="-1">Discover</h1>
+        <button id="feed-about-toggle" class="feed-about-toggle" type="button" aria-expanded="false" aria-controls="feed-about-body">About this feed</button>
+      </div>
+      <p class="lead lead-short">Recent political developments in plain language, each linked to its source.</p>
       <p id="discover-checked" class="note"></p>
+      <div id="feed-about-body" class="feed-about-body" hidden>
+        <p>Recent political developments in plain language, each with a link to the original source. Filter by issue or by elections, choose My interests to follow the topics you care about, and save the ones you want to come back to.</p>
+        <p>This is a hand-checked list, not a live news feed, so it can be behind the news. The date above is when it was last checked. The stories you save stay in this browser on this device only, and nothing is sent anywhere.</p>
+      </div>
 
       <div id="discover-filters" class="discover-filters"></div>
       <p id="discover-status" class="note" role="status"></p>
@@ -153,14 +157,14 @@
       </div>
     </section>
 
-    <section id="quiz-screen" class="screen" aria-labelledby="quiz-heading" hidden>
+    <section id="quiz-screen" class="screen book-screen" aria-labelledby="quiz-heading" hidden>
       <button id="quiz-back-button" class="link-button" type="button">&larr; Back</button>
       <h1 id="quiz-heading" tabindex="-1">Where do my views fall?</h1>
       <p class="lead">21 statements, about 4 minutes. Pick how much you agree with each one, or skip it. Your answers stay on this device and are not saved.</p>
       <div id="quiz-body" class="practice-card"></div>
     </section>
 
-    <section id="quiz-results-screen" class="screen" aria-labelledby="quiz-results-heading" hidden>
+    <section id="quiz-results-screen" class="screen book-screen" aria-labelledby="quiz-results-heading" hidden>
       <button id="quiz-results-back-button" class="link-button" type="button">&larr; Back to the start</button>
       <h1 id="quiz-results-heading" tabindex="-1">Where your views fall</h1>
 
@@ -197,7 +201,7 @@
       </div>
     </section>
 
-    <section id="compare-screen" class="screen" aria-labelledby="compare-heading" hidden>
+    <section id="compare-screen" class="screen book-screen" aria-labelledby="compare-heading" hidden>
       <button id="compare-back-button" class="link-button" type="button">&larr; Back to races</button>
       <h1 id="compare-heading" tabindex="-1"></h1>
       <p id="compare-subtitle" class="lead"></p>

@@ -242,6 +242,7 @@
     topicList.replaceChildren();
     window.POSITION_TOPICS.forEach(function (topic, index) {
       var details = element("details", "topic");
+      details.setAttribute("data-topic", topic.id);
       if (index === 0) details.open = true;
 
       var summary = element("summary", "topic-summary");
@@ -509,6 +510,7 @@
 
   function renderQuizTopic(topic) {
     var details = element("details", "topic");
+    details.setAttribute("data-topic", topic.id);
     var summary = element("summary", "topic-summary");
     summary.appendChild(element("span", "topic-label", topic.label));
     details.appendChild(summary);
@@ -596,9 +598,16 @@
     window.scrollTo(0, 0);
   }
 
+  // The "About this feed" button on Discover opens or closes the longer explanation.
+  function setFeedAboutOpen(open) {
+    document.getElementById("feed-about-toggle").setAttribute("aria-expanded", String(open));
+    document.getElementById("feed-about-body").hidden = !open;
+  }
+
   // options (optional): { filter, issueId, backLabel } when arriving from a Learn issue, so Discover opens
   // on that issue and Back returns to it.
   function showDiscover(fromScreen, options) {
+    setFeedAboutOpen(false);
     discoverReturnScreen = fromScreen;
     discoverReturnIssueId = options && options.issueId ? options.issueId : null;
     document.getElementById("discover-back-button").textContent =
@@ -757,6 +766,9 @@
     showDiscover(zipScreen);
   });
   document.getElementById("discover-back-button").addEventListener("click", leaveDiscover);
+  document.getElementById("feed-about-toggle").addEventListener("click", function () {
+    setFeedAboutOpen(document.getElementById("feed-about-toggle").getAttribute("aria-expanded") !== "true");
+  });
   document.getElementById("my-from-zip").addEventListener("click", function () {
     showMy(zipScreen);
   });
@@ -786,8 +798,76 @@
   document.getElementById("quiz-retake").addEventListener("click", function () {
     showQuiz(quizReturnScreen);
   });
+  // The bottom navigation (phones only; the styles hide it on laptops): Home, Learn, Discover, and
+  // My ELECTAPP. Each tab starts that screen fresh from Home, so Back from it goes Home. The current place is marked
+  // from whichever screen is showing; Quiz, Practice, the races, and profiles count as Home, since they are reached
+  // from there (and from Learn).
+  function openFromNav(tab) {
+    [].forEach.call(document.querySelectorAll(".screen"), function (screen) { screen.hidden = true; });
+    zipScreen.hidden = false;
+    if (tab === "learn") {
+      showIssues(zipScreen, "national");
+    } else if (tab === "discover") {
+      showDiscover(zipScreen);
+    } else if (tab === "my") {
+      showMy(zipScreen);
+    } else {
+      refreshMyEntry();
+      window.scrollTo(0, 0);
+      var heading = document.getElementById("zip-heading");
+      heading.tabIndex = -1;
+      heading.focus();
+    }
+  }
+
+  function buildBookNav() {
+    var tabs = [
+      { key: "home", label: "Home" },
+      { key: "learn", label: "Learn" },
+      { key: "discover", label: "Discover" },
+      { key: "my", label: "My ELECTAPP" }
+    ];
+    var nav = element("nav", "book-nav");
+    nav.setAttribute("aria-label", "Main");
+    var buttons = {};
+    tabs.forEach(function (tab) {
+      var button = element("button", "book-nav-item", tab.label);
+      button.type = "button";
+      button.setAttribute("data-tab", tab.key);
+      button.addEventListener("click", function () { openFromNav(tab.key); });
+      nav.appendChild(button);
+      buttons[tab.key] = button;
+    });
+    document.body.appendChild(nav);
+
+    function currentTab() {
+      var visible = document.querySelector(".screen:not([hidden])");
+      var id = visible ? visible.id : "zip-screen";
+      if (id === "issues-screen") return "learn";
+      if (id === "discover-screen") return "discover";
+      if (id === "my-screen") return "my";
+      return "home";
+    }
+
+    function markCurrent() {
+      var current = currentTab();
+      tabs.forEach(function (tab) {
+        if (tab.key === current) buttons[tab.key].setAttribute("aria-current", "page");
+        else buttons[tab.key].removeAttribute("aria-current");
+      });
+    }
+
+    new MutationObserver(markCurrent).observe(document.querySelector("main.app"), {
+      attributes: true,
+      attributeFilter: ["hidden"],
+      subtree: true
+    });
+    markCurrent();
+  }
+
   renderIssuePicker();
   buildIssueViewChips();
   refreshMyEntry();
   document.getElementById("results-heading").setAttribute("tabindex", "-1");
+  buildBookNav();
 })();

@@ -197,6 +197,7 @@
     var list = element("ul", "action-list");
     actions.forEach(function (action) {
       var card = element("li", "action-card");
+      card.setAttribute("data-topic", action.topicId);
       var top = element("div", "action-top");
       var time = element("time", "action-date", action.item.date);
       time.setAttribute("datetime", action.iso);
